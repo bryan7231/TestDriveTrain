@@ -15,13 +15,15 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 
 public class DriveSubsystem extends SubsystemBase{
-    private final CANSparkMax m_leftMotor;
-    private final CANSparkMax m_rightMotor;
+    private final CANSparkMax m_frontLeftMotor;
+    private final CANSparkMax m_frontRightMotor;
+    private final CANSparkMax m_backLeftMotor;
+    private final CANSparkMax m_backRightMotor;
     private final MotorController leftSideGroup;
     private final MotorController rightSideGroup;
     private final DifferentialDrive drive;
-    private final RelativeEncoder leftEncoder;
-    private final RelativeEncoder rightEncoder;
+    // private final RelativeEncoder leftEncoder;
+    // private final RelativeEncoder rightEncoder;
     // private Pose2d pose = new Pose2d(0, 0, new Rotation2d());
 
     //private final DifferentialDriveKinematics kinematics;
@@ -32,14 +34,16 @@ public class DriveSubsystem extends SubsystemBase{
 
     public DriveSubsystem()
      {
-        m_leftMotor = new CANSparkMax(DrivebaseConstants.LEFT_SPARK_ID, MotorType.kBrushed);
-        m_rightMotor = new CANSparkMax(DrivebaseConstants.RIGHT_SPARK_ID, MotorType.kBrushed);
+        m_frontLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushed);
+        m_frontRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushed);
+        m_backLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushed);
+        m_backRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushed);
       
-        leftSideGroup = new MotorControllerGroup(m_leftMotor);
-        rightSideGroup = new MotorControllerGroup(m_rightMotor); //:(
+        leftSideGroup = new MotorControllerGroup(m_frontLeftMotor, m_backLeftMotor);
+        rightSideGroup = new MotorControllerGroup(m_backLeftMotor, m_backRightMotor); //:(
         
-        leftEncoder = m_leftMotor.getEncoder();
-        rightEncoder = m_rightMotor.getEncoder();
+        // leftEncoder = m_leftMotor.getEncoder();
+        // rightEncoder = m_rightMotor.getEncoder();
         /*
         
         kinematics = new DifferentialDriveKinematics(
@@ -49,22 +53,17 @@ public class DriveSubsystem extends SubsystemBase{
 				new Translation2d(0.49276 / 2.0, 0.23 / 2.0));
         
         */
-        m_leftMotor.setInverted(DrivebaseConstants.LEFT_SPARK_INVERTED);
-        m_rightMotor.setInverted(DrivebaseConstants.RIGHT_SPARK_INVERTED);
+        leftSideGroup.setInverted(DrivebaseConstants.LEFT_SPARK_INVERTED);
+        rightSideGroup.setInverted(DrivebaseConstants.RIGHT_SPARK_INVERTED);
 
-        m_leftMotor.setIdleMode(DrivebaseConstants.BRAKE);
-        m_rightMotor.setIdleMode(DrivebaseConstants.BRAKE);
+        m_frontLeftMotor.setIdleMode(DrivebaseConstants.BRAKE);
+        m_frontRightMotor.setIdleMode(DrivebaseConstants.BRAKE);
+        m_backLeftMotor.setIdleMode(DrivebaseConstants.BRAKE);
+        m_backRightMotor.setIdleMode(DrivebaseConstants.BRAKE);
 
         drive = new DifferentialDrive(leftSideGroup, rightSideGroup);
      }
 
-    public CANSparkMax getM_leftMotor() {
-        return m_leftMotor;
-    }
-
-    public CANSparkMax getM_rightMotor() {
-        return m_rightMotor;
-    }
 
     public MotorController getLeftSideGroup() {
         return leftSideGroup;
@@ -74,48 +73,48 @@ public class DriveSubsystem extends SubsystemBase{
         return rightSideGroup;
     }
 
-    public RelativeEncoder getLeftEncoder() {
-        return leftEncoder;
-    }
+//     public RelativeEncoder getLeftEncoder() {
+//         return leftEncoder;
+//     }
 
-    public RelativeEncoder getRightEncoder() {
-        return rightEncoder;
-    }
+//     public RelativeEncoder getRightEncoder() {
+//         return rightEncoder;
+//     }
 
-    public RelativeEncoder getleftEncoder()
-    {
-        return leftEncoder;
-    }
-    public RelativeEncoder getrightEncoder()
-    {
-        return rightEncoder;
-    }
+//     public RelativeEncoder getleftEncoder()
+//     {
+//         return leftEncoder;
+//     }
+//     public RelativeEncoder getrightEncoder()
+//     {
+//         return rightEncoder;
+//     }
 
-    public double getLeftEncoderPosition() {
-        return Math.abs(leftEncoder.getPosition());
-    }
+//     public double getLeftEncoderPosition() {
+//         return Math.abs(leftEncoder.getPosition());
+//     }
 
-    public double getRightEncoderPosition() {
-        return Math.abs(rightEncoder.getPosition());
-    }
-//ninjsgo
-    public double getAverageEncoders()
-    {
-        return Math.abs((Math.abs(getLeftEncoderPosition()) + Math.abs(getRightEncoderPosition())) / 2);
-    }
+//     public double getRightEncoderPosition() {
+//         return Math.abs(rightEncoder.getPosition());
+//     }
+// //ninjsgo
+//     public double getAverageEncoders()
+//     {
+//         return Math.abs((Math.abs(getLeftEncoderPosition()) + Math.abs(getRightEncoderPosition())) / 2);
+//     }
 
-    public void resetEncoders()
-    {
-        leftEncoder.setPosition(0.0D);
-        rightEncoder.setPosition(0.0D);
+//     public void resetEncoders()
+//     {
+//         leftEncoder.setPosition(0.0D);
+//         rightEncoder.setPosition(0.0D);
 
-    }
+//     }
 
-    public void resetEncoders(double value)
-    {
-        leftEncoder.setPosition(value);
-        rightEncoder.setPosition(value);
-    }
+//     public void resetEncoders(double value)
+//     {
+//         leftEncoder.setPosition(value);
+//         rightEncoder.setPosition(value);
+//     }
 
 
     public void arcadeDrive(double arcadeDriveSpeed, double arcadeDriveRotations)

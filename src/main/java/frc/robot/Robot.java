@@ -44,9 +44,9 @@ public class Robot extends TimedRobot {
     // We need to invert one side of the drivetrain so that positive voltages
     // result in both sides moving forward. Depending on how your robot's
     // gearbox is constructed, you might have to invert the left side instead.
-    tank.getM_leftMotor().setInverted(true);
+    tank.getLeftSideGroup().setInverted(true);
 
-    m_myRobot = new DifferentialDrive(tank.getM_leftMotor(), tank.getM_rightMotor());
+    m_myRobot = new DifferentialDrive(tank.getLeftSideGroup(), tank.getRightSideGroup());
     // XBOX_CONTROLLER.leftTrigger().onTrue(new InstantCommand());
 		// XBOX_CONTROLLER.rightBumper().onTrue(new InstantCommand());
     m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
