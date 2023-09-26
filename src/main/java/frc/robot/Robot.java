@@ -44,9 +44,10 @@ public class Robot extends TimedRobot {
     m_myRobot = new DifferentialDrive(tank.getM_leftMotor(), tank.getM_rightMotor());
     // XBOX_CONTROLLER.leftTrigger().onTrue(new InstantCommand());
 		// XBOX_CONTROLLER.rightBumper().onTrue(new InstantCommand());
+    m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
 
   }
-  public void teleopPeriodic() {
-    m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
-  }
+  // public void teleopPeriodic() {
+  //   m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
+  // }
 }
