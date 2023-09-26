@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import frc.robot.RobotMap.ControllerConstants;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotMap.DrivebaseConstants;
 import frc.robot.Subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
@@ -21,19 +22,23 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.RobotMap;
 
-
 /**
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
  * the code necessary to operate a robot with tank drive.
  */
 public class Robot extends TimedRobot {
   public static final DriveSubsystem tank = new DriveSubsystem();
+  public static DriveSubsystem getDrivebase() {
+		return tank;
+	}
   private DifferentialDrive m_myRobot;
   private Joystick m_leftStick;
   private Joystick m_rightStick;
   
+	public static final Joystick leftJoystick = new Joystick(ControllerConstants.LEFT_CONT_ID);
+	public static final Joystick rightJoystick = new Joystick(ControllerConstants.RIGHT_CONT_ID);
 
-	private static final XboxController XBOX_CONTROLLER = new XboxController(ControllerConstants.CONTROLLER_ID);
+	// private static final XboxController XBOX_CONTROLLER = new XboxController(ControllerConstants.CONTROLLER_ID);
 
   public void robotInit() {
     // We need to invert one side of the drivetrain so that positive voltages
@@ -47,7 +52,17 @@ public class Robot extends TimedRobot {
     m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
 
   }
-  // public void teleopPeriodic() {
-  //   m_myRobot.tankDrive(-m_leftStick.getY(), -m_rightStick.getY());
-  // }
+  @Override
+	public void robotPeriodic() {
+		/*
+		 * Runs the Scheduler. This is responsible for polling buttons, adding
+		 * newly-scheduled
+		 * commands, running already-scheduled commands, removing finished or
+		 * interrupted commands,
+		 * and running subsystem periodic() methods. This must be called from the
+		 * robot's periodic
+		 * block in order for anything in the Command-based framework to work.
+		 */
+		CommandScheduler.getInstance().run();
+	}
 }

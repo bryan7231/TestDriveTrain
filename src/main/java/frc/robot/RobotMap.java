@@ -18,5 +18,9 @@ public final class RobotMap {
 
 	public static final class ControllerConstants {
 		public static final int CONTROLLER_ID = 2;
+		public static final int LEFT_CONT_ID = 3;
+		public static final int RIGHT_CONT_ID = 4;
 	}
+
+
 }

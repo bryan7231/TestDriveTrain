@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 
 public class DriveSubsystem extends SubsystemBase{
@@ -21,7 +22,8 @@ public class DriveSubsystem extends SubsystemBase{
     private final DifferentialDrive drive;
     private final RelativeEncoder leftEncoder;
     private final RelativeEncoder rightEncoder;
-    private Pose2d pose = new Pose2d(0, 0, new Rotation2d());
+    // private Pose2d pose = new Pose2d(0, 0, new Rotation2d());
+
     //private final DifferentialDriveKinematics kinematics;
 
     public DifferentialDrive getDrive() {
@@ -96,7 +98,7 @@ public class DriveSubsystem extends SubsystemBase{
     public double getRightEncoderPosition() {
         return Math.abs(rightEncoder.getPosition());
     }
-
+//ninjsgo
     public double getAverageEncoders()
     {
         return Math.abs((Math.abs(getLeftEncoderPosition()) + Math.abs(getRightEncoderPosition())) / 2);
@@ -133,9 +135,6 @@ public class DriveSubsystem extends SubsystemBase{
     }
 
 
-    public Pose2d getPose() {
-        return pose;
-    }
 
     //public DifferentialDriveKinematics getKinematics() {
     //  return kinematics;
