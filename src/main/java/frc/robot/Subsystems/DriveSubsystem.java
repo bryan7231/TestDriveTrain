@@ -36,8 +36,8 @@ public class DriveSubsystem extends SubsystemBase{
      {
         m_frontLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushed);
         m_frontRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushed);
-        m_backLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushed);
-        m_backRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushed);
+        m_backLeftMotor = new CANSparkMax(DrivebaseConstants.BACK_LEFT_SPARK_ID, MotorType.kBrushed);
+        m_backRightMotor = new CANSparkMax(DrivebaseConstants.BACK_RIGHT_SPARK_ID, MotorType.kBrushed);
       
         leftSideGroup = new MotorControllerGroup(m_frontLeftMotor, m_backLeftMotor);
         rightSideGroup = new MotorControllerGroup(m_backLeftMotor, m_backRightMotor); //:(
