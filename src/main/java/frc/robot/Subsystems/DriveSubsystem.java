@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 
 
 public class DriveSubsystem extends SubsystemBase{
@@ -22,6 +23,8 @@ public class DriveSubsystem extends SubsystemBase{
     private final MotorController leftSideGroup;
     private final MotorController rightSideGroup;
     private final DifferentialDrive drive;
+
+    private final Rotation2d m_gyro;
     // private final RelativeEncoder leftEncoder;
     // private final RelativeEncoder rightEncoder;
     // private Pose2d pose = new Pose2d(0, 0, new Rotation2d());
@@ -40,7 +43,9 @@ public class DriveSubsystem extends SubsystemBase{
         m_backRightMotor = new CANSparkMax(DrivebaseConstants.BACK_RIGHT_SPARK_ID, MotorType.kBrushed);
       
         leftSideGroup = new MotorControllerGroup(m_frontLeftMotor, m_backLeftMotor);
-        rightSideGroup = new MotorControllerGroup(m_backLeftMotor, m_backRightMotor); //:(
+        rightSideGroup = new MotorControllerGroup(m_backRightMotor, m_backRightMotor); 
+
+        m_gyro = 
         
         // leftEncoder = m_leftMotor.getEncoder();
         // rightEncoder = m_rightMotor.getEncoder();
@@ -53,13 +58,23 @@ public class DriveSubsystem extends SubsystemBase{
 				new Translation2d(0.49276 / 2.0, 0.23 / 2.0));
         
         */
-        leftSideGroup.setInverted(DrivebaseConstants.LEFT_SPARK_INVERTED);
-        rightSideGroup.setInverted(DrivebaseConstants.RIGHT_SPARK_INVERTED);
+        // leftSideGroup.setInverted(DrivebaseConstants.LEFT_SPARK_INVERTED);
+        // rightSideGroup.setInverted(DrivebaseConstants.RIGHT_SPARK_INVERTED);
 
         m_frontLeftMotor.setIdleMode(DrivebaseConstants.BRAKE);
         m_frontRightMotor.setIdleMode(DrivebaseConstants.BRAKE);
         m_backLeftMotor.setIdleMode(DrivebaseConstants.BRAKE);
         m_backRightMotor.setIdleMode(DrivebaseConstants.BRAKE);
+
+        m_frontLeftMotor.setInverted(true);
+        m_frontRightMotor.setInverted(true);
+        m_backLeftMotor.setInverted(true);
+        m_backRightMotor.setInverted(true);
+
+        DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(
+  m_gyro.getRotation2d(),
+  m_leftEncoder.getDistance(), m_rightEncoder.getDistance(),
+  new Pose2d(5.0, 13.5, new Rotation2d()));
 
         drive = new DifferentialDrive(leftSideGroup, rightSideGroup);
      }

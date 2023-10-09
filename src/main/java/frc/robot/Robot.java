@@ -32,10 +32,7 @@ public class Robot extends TimedRobot {
 	public static DriveSubsystem getDrivebase() {
 			return tank;
 		}
-	private DifferentialDrive m_myRobot;
 
-	public static final Joystick leftJoystick = new Joystick(ControllerConstants.LEFT_CONT_ID);
-	public static final Joystick rightJoystick = new Joystick(ControllerConstants.RIGHT_CONT_ID);
 
 	public static final XboxController XBOX_CONTROLLER = new XboxController(ControllerConstants.CONTROLLER_ID);
 
@@ -48,7 +45,7 @@ public class Robot extends TimedRobot {
     //m_myRobot = new DifferentialDrive(tank.getLeftSideGroup(), tank.getRightSideGroup());
     // XBOX_CONTROLLER.leftTrigger().onTrue(new InstantCommand());
 		// XBOX_CONTROLLER.rightBumper().onTrue(new InstantCommand());
-	getDrivebase().setDefaultCommand(new DefaultDrive());
+	Robot.tank.setDefaultCommand(new DefaultDrive());
 
   }
   @Override

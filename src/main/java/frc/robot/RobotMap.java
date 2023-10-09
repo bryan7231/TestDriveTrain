@@ -10,9 +10,9 @@ public final class RobotMap {
 
 		/* CAN IDs of the Motors on the Drive Base */
 		public static final int FRONT_LEFT_SPARK_ID = 18;
-		public static final int FRONT_RIGHT_SPARK_ID = 17;
-		public static final int BACK_LEFT_SPARK_ID = 2;
-		public static final int BACK_RIGHT_SPARK_ID = 1;
+		public static final int FRONT_RIGHT_SPARK_ID = 5;
+		public static final int BACK_LEFT_SPARK_ID = 6;
+		public static final int BACK_RIGHT_SPARK_ID = 7;
 		public static final boolean LEFT_SPARK_INVERTED = true;
 		public static final boolean RIGHT_SPARK_INVERTED = true;
 		public static final IdleMode BRAKE = IdleMode.kBrake;
