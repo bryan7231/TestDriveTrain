@@ -1,7 +1,6 @@
 package frc.robot.Autonomus;
 
 import static frc.robot.Autonomus.AutonomousProgram.create;
-import static frc.robot.Robot.tank;
 
 import java.util.Arrays;
 import java.util.List;

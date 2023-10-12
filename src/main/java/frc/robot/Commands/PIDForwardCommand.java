@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Robot;
 
 
-public class SpinjitzuMaster extends CommandBase
+public class PIDForwardCommand extends CommandBase
 {
     private final double speed;
     private  double kP;
@@ -13,7 +13,8 @@ public class SpinjitzuMaster extends CommandBase
     private  double P, I, D;
     private  double error;
     private double previousError;
-    public SpinjitzuMaster(double speed, double kP, double kI)
+
+    public PIDForwardCommand(double speed, double kP, double kI)
     {
         this.kP = kP;
         this.kI = kI;
@@ -26,7 +27,7 @@ public class SpinjitzuMaster extends CommandBase
     @Override
     public void initialize()
     {
-        Robot.LloydKaiJayZaneColeNyaNavx.reset();
+        Robot.getNavX().reset();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class SpinjitzuMaster extends CommandBase
     @Override
     public void execute()
     {
-        error = -Robot.getNavx().getAngle();
+        error = -Robot.getNavX().getAngle();
         P = error * kP;
         D = (error-previousError) * kP;//WWWWWWW CODE
         I += error * kI;
@@ -46,6 +47,4 @@ public class SpinjitzuMaster extends CommandBase
         Robot.getDrivebase().arcadeDrive(speed, P+I+D);
         
     }
-
-    //@Override
 }

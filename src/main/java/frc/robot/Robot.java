@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.ControllerConstants;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Commands.SpinjitzuMaster;
+import frc.robot.Commands.PIDForwardCommand;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotMap.DrivebaseConstants;
 import frc.robot.Subsystems.DriveSubsystem;
@@ -25,7 +25,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.RobotMap;
 import frc.robot.Commands.DefaultDrive;
-import frc.robot.Commands.SpinjitzuMaster;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -36,51 +35,44 @@ import com.kauailabs.navx.frc.AHRS;
 public class Robot extends TimedRobot {
 
 	/* RoboRio Sensors */
-	public static final AHRS LloydKaiJayZaneColeNyaNavx = new AHRS();
+	private static final AHRS navX = new AHRS();
 
-	public static AHRS getNavx() {
-		return LloydKaiJayZaneColeNyaNavx;
+	public static AHRS getNavX() {
+		return navX;
 	}
 
+	private static final DriveSubsystem tank = new DriveSubsystem();
 
-	
-
-	public static final DriveSubsystem tank = new DriveSubsystem();
 	public static DriveSubsystem getDrivebase() {
 			return tank;
-		}
-
+	}
 
 	public static final XboxController XBOX_CONTROLLER = new XboxController(ControllerConstants.CONTROLLER_ID);
 
-  public void robotInit() {
-    // We need to invert one side of the drivetrain so that positive voltages
-    // result in both sides moving forward. Depending on how your robot's
-    // gearbox is constructed, you might have to invert the left side instead.
-    tank.getLeftSideGroup().setInverted(true);
+	public void robotInit() {
+		// We need to invert one side of the drivetrain so that positive voltages
+		// result in both sides moving forward. Depending on how your robot's
+		// gearbox is constructed, you might have to invert the left side instead.
+		tank.getLeftSideGroup().setInverted(true);
 
-	//Robot.XBOX_CONTROLLER.get
+		//Robot.XBOX_CONTROLLER.get
 
-	if(Robot.XBOX_CONTROLLER.getLeftBumper()) {
-		System.out.println("Pid mode");
-		Robot.getDrivebase().setDefaultCommand(new SpinjitzuMaster(0.9, .05, 0));
+		if(Robot.XBOX_CONTROLLER.getLeftBumper()) {
+			System.out.println("Pid mode");
+			Robot.getDrivebase().setDefaultCommand(new PIDForwardCommand(0.9, .05, 0));
+		}
+		else {
+			System.out.println("Normal mode");
+			//Robot.tank.setDefaultCommand(new DefaultDrive());
+			Robot.getDrivebase().setDefaultCommand(new PIDForwardCommand(0.9, .05, 0));
+
+		}
+		
+		SmartDashboard.putBoolean("garmadon", Robot.XBOX_CONTROLLER.getLeftBumperPressed());
+
 	}
-	else{
-		System.out.println("Normal mode");
-		//Robot.tank.setDefaultCommand(new DefaultDrive());
-		Robot.getDrivebase().setDefaultCommand(new SpinjitzuMaster(0.9, .05, 0));
 
-	}
-	SmartDashboard.putBoolean("garmadon", Robot.XBOX_CONTROLLER.getLeftBumperPressed());
-	
-
-    //m_myRobot = new DifferentialDrive(tank.getLeftSideGroup(), tank.getRightSideGroup());
-    // XBOX_CONTROLLER.leftTrigger().onTrue(new InstantCommand());
-		// XBOX_CONTROLLER.rightBumper().onTrue(new InstantCommand());
-//https://play.typeracer.com?rt=13yjqvt1ms
-
-  }
-  @Override
+  	@Override
 	public void robotPeriodic() {
 
 		/*
