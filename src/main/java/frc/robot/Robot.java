@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap.ControllerConstants;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Commands.PIDForwardCommand;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotMap.DrivebaseConstants;
 import frc.robot.Subsystems.DriveSubsystem;
@@ -35,6 +34,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import frc.robot.RobotMap;
 import frc.robot.Commands.DefaultDrive;
+import frc.robot.Commands.PIDTurn;
 
 import com.kauailabs.navx.frc.AHRS;
 
@@ -66,6 +66,7 @@ public class Robot extends LoggedRobot {
 		tank.setDefaultCommand(new DefaultDrive());
 
 		new Trigger(() -> {return XBOX_CONTROLLER.getXButtonPressed();}).onTrue(new InstantCommand(tank::resetPose));
+		new Trigger(() -> {return XBOX_CONTROLLER.getYButtonPressed();}).onTrue(new PIDTurn(90));
 
 		logger.recordMetadata("DifferentialDriveSim", "MyProject");
 

@@ -108,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase{
     @Override
     public void periodic() {
 
-        Rotation2d gyroAngle = new Rotation2d(Robot.getNavX().getAngle());
+        Rotation2d gyroAngle = new Rotation2d(Math.toRadians(Robot.getNavX().getAngle()));
 
         m_pose = dDriveOdometry.update(gyroAngle,
         left.getPosition(),
