@@ -5,7 +5,16 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.PowerDistribution;
+
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import org.littletonrobotics.junction.LogFileUtil;
+import org.littletonrobotics.junction.LoggedRobot;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import java.lang.ModuleLayer.Controller;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.revrobotics.CANSparkMax;
@@ -32,43 +42,45 @@ import com.kauailabs.navx.frc.AHRS;
  * This is a demo program showing the use of the DifferentialDrive class, specifically it contains
  * the code necessary to operate a robot with tank drive.
  */
-public class Robot extends TimedRobot {
+public class Robot extends LoggedRobot {
 
 	/* RoboRio Sensors */
 	private static final AHRS navX = new AHRS();
+
+	public static final Logger logger = Logger.getInstance(); 
 
 	public static AHRS getNavX() {
 		return navX;
 	}
 
-	private static final DriveSubsystem tank = new DriveSubsystem();
+	private static final DriveSubsystem tank = new DriveSubsystem();	
 
 	public static DriveSubsystem getDrivebase() {
 			return tank;
 	}
 
-	public static final XboxController XBOX_CONTROLLER = new XboxController(ControllerConstants.CONTROLLER_ID);
+	public static final XboxController XBOX_CONTROLLER = new XboxController(0);
 
 	public void robotInit() {
-		// We need to invert one side of the drivetrain so that positive voltages
-		// result in both sides moving forward. Depending on how your robot's
-		// gearbox is constructed, you might have to invert the left side instead.
-		tank.getLeftSideGroup().setInverted(true);
-
-		//Robot.XBOX_CONTROLLER.get
-
-		if(Robot.XBOX_CONTROLLER.getLeftBumper()) {
-			System.out.println("Pid mode");
-			Robot.getDrivebase().setDefaultCommand(new PIDForwardCommand(0.9, .05, 0));
-		}
-		else {
-			System.out.println("Normal mode");
-			//Robot.tank.setDefaultCommand(new DefaultDrive());
-			Robot.getDrivebase().setDefaultCommand(new PIDForwardCommand(0.9, .05, 0));
-
-		}
 		
-		SmartDashboard.putBoolean("garmadon", Robot.XBOX_CONTROLLER.getLeftBumperPressed());
+		tank.setDefaultCommand(new DefaultDrive());
+
+		new Trigger(() -> {return XBOX_CONTROLLER.getXButtonPressed();}).onTrue(new InstantCommand(tank::resetPose));
+
+		logger.recordMetadata("DifferentialDriveSim", "MyProject");
+
+		if (isReal()) {
+			logger.addDataReceiver(new WPILOGWriter("/U"));
+			logger.addDataReceiver(new NT4Publisher());
+			new PowerDistribution(1, ModuleType.kRev);
+		} else {
+			setUseTiming(false);
+			String logPath = LogFileUtil.findReplayLog();
+			logger.setReplaySource(new WPILOGReader(logPath));
+			logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+		}
+
+		logger.start();
 
 	}
 

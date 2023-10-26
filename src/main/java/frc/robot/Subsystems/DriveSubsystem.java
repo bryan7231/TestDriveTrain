@@ -31,6 +31,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.GenericEntry;
+import com.kauailabs.navx.frc.AHRS;
 
 
 public class DriveSubsystem extends SubsystemBase{
@@ -42,17 +43,22 @@ public class DriveSubsystem extends SubsystemBase{
     private final MotorController leftSideGroup;
     private final MotorController rightSideGroup;
     private final DifferentialDrive drive;
+    private final DifferentialDriveOdometry dDriveOdometry; 
+    private final RelativeEncoder left;
+    private final RelativeEncoder right;
+    
+    private Pose2d m_pose; 
 
     public DifferentialDrive getDrive() {
         return drive;
     }
 
     public DriveSubsystem()
-     {
-        m_frontLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushed);
-        m_frontRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushed);
-        m_backLeftMotor = new CANSparkMax(DrivebaseConstants.BACK_LEFT_SPARK_ID, MotorType.kBrushed);
-        m_backRightMotor = new CANSparkMax(DrivebaseConstants.BACK_RIGHT_SPARK_ID, MotorType.kBrushed);
+     { 
+        m_frontLeftMotor = new CANSparkMax(DrivebaseConstants.FRONT_LEFT_SPARK_ID, MotorType.kBrushless);
+        m_frontRightMotor = new CANSparkMax(DrivebaseConstants.FRONT_RIGHT_SPARK_ID, MotorType.kBrushless);
+        m_backLeftMotor = new CANSparkMax(DrivebaseConstants.BACK_LEFT_SPARK_ID, MotorType.kBrushless);
+        m_backRightMotor = new CANSparkMax(DrivebaseConstants.BACK_RIGHT_SPARK_ID, MotorType.kBrushless);
       
         leftSideGroup = new MotorControllerGroup(m_frontLeftMotor, m_backLeftMotor);
         rightSideGroup = new MotorControllerGroup(m_frontRightMotor, m_backRightMotor); 
@@ -62,12 +68,19 @@ public class DriveSubsystem extends SubsystemBase{
         m_backLeftMotor.setIdleMode(DrivebaseConstants.BRAKE);
         m_backRightMotor.setIdleMode(DrivebaseConstants.BRAKE);
 
-        m_frontLeftMotor.setInverted(true);
-        m_frontRightMotor.setInverted(true);
-        m_backLeftMotor.setInverted(true);
-        m_backRightMotor.setInverted(true);
+        drive = new DifferentialDrive(leftSideGroup, rightSideGroup);
+        
+        right = m_frontRightMotor.getEncoder();
+        left = m_frontLeftMotor.getEncoder();
 
-         drive = new DifferentialDrive(leftSideGroup, rightSideGroup);
+        right.setPositionConversionFactor(1/4.67);
+        left.setPositionConversionFactor(1/4.67);
+
+        dDriveOdometry = new DifferentialDriveOdometry(new Rotation2d(Robot.getNavX().getAngle()),
+          left.getPosition(), 
+          right.getPosition(), 
+          new Pose2d(0, 0, new Rotation2d()));
+
      }
 
 
@@ -93,5 +106,21 @@ public class DriveSubsystem extends SubsystemBase{
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+
+        Rotation2d gyroAngle = new Rotation2d(Robot.getNavX().getAngle());
+
+        m_pose = dDriveOdometry.update(gyroAngle,
+        left.getPosition(),
+        right.getPosition());
+
+        Robot.logger.recordOutput("Odometry", m_pose);
+
+    }
+
+    public void resetPose() {
+        dDriveOdometry.resetPosition(Robot.getNavX().getRotation2d(), left.getPosition(), right.getPosition(), new Pose2d());
+        Robot.getNavX().reset();
+    }
+
 }
