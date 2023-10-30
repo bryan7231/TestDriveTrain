@@ -4,6 +4,7 @@ import frc.robot.Robot;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class PIDTurn extends CommandBase{
     
@@ -21,6 +22,8 @@ public class PIDTurn extends CommandBase{
         pid.enableContinuousInput(-180,180);
         pid.setTolerance(0.5);
 
+        SmartDashboard.putData("PID Controller", pid);
+
         addRequirements(Robot.getDrivebase());
 
     }
@@ -29,8 +32,7 @@ public class PIDTurn extends CommandBase{
     public void execute() {
         double output = pid.calculate((Robot.getNavX().getAngle()));
         Robot.getDrivebase().arcadeDrive(0, output);
-        Logger.getInstance().recordOutput("PID Output", output);
-        Logger.getInstance().recordOutput("PID Setpoint", setpoint);
+        Robot.getDrivebase().updateTab(output, setpoint);
     }
 
     @Override

@@ -31,6 +31,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.networktables.GenericEntry;
+import frc.robot.Commands.PIDTurn;
 import com.kauailabs.navx.frc.AHRS;
 
 
@@ -47,8 +48,13 @@ public class DriveSubsystem extends SubsystemBase{
     private final DifferentialDriveOdometry dDriveOdometry; 
     private final RelativeEncoder left;
     private final RelativeEncoder right;
-    
+    private final ShuffleboardTab DBSTab = Shuffleboard.getTab("Drive Base Subsystem");
+
     private Pose2d m_pose; 
+
+    public ShuffleboardTab getTab() {
+        return DBSTab;
+    }
 
     public DifferentialDrive getDrive() {
         return drive;
@@ -81,9 +87,15 @@ public class DriveSubsystem extends SubsystemBase{
           left.getPosition(), 
           right.getPosition(), 
           new Pose2d(0, 0, new Rotation2d()));
-
+        
+        DBSTab.add("PID Output", 0);
+        DBSTab.add("PID Setpoint", 0); 
      }
 
+    public void updateTab(double output, double setpoint) {
+        DBSTab.add("PID Output", output);
+        DBSTab.add("PID Setpoint", setpoint); 
+    }
 
     public MotorController getLeftSideGroup() {
         return leftSideGroup;
